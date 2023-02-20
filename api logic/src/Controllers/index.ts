@@ -1,5 +1,6 @@
 import { RequestHandler, Request, Response } from "express";
 import bcrypt from 'bcrypt'
+import { exec } from "../helpers/dbConnect";
 
 interface ExtendedRequest extends Request {
   body: {
@@ -11,14 +12,15 @@ interface ExtendedRequest extends Request {
   };
 }
 
-export const register = (req: ExtendedRequest, res: Response) => {
+export const register = async(req: ExtendedRequest, res: Response) => {
   const { firstname, lastname, email, password, isAdmin } = req.body;
   
   try {
-    
-    return res.status(200).json({ msg: "set up register" });
+    const user = await exec('getUserByEmail', {email})
+    return res.status(200).json({user});
   } catch (error) {
-    return res.status(200).json({ msg: "set up register" });
+    console.log(error)
+    return res.status(200).json({ error });
   }
 };
 
