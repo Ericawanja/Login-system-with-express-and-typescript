@@ -1,8 +1,8 @@
-import express, {Application, Request, Response} from 'express'
+import express, {Application, Request, Response, json} from 'express'
+import authRouter from './Routers'
 
 const App:Application = express()
+App.use(json())
 
-App.get('/', (req:Request, res:Response)=>{
-    return res.status(200).json({msg:'getting the data'})
-})
+App.use("/auth" authRouter)
 App.listen(5000, ()=>console.log('app running'))
