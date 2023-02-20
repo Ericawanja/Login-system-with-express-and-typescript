@@ -6,9 +6,9 @@ class Connection {
   constructor() {   
     this.pool = mssql.connect(sqlConfig);
   }
-  createRequest = (request: mssql.Request, data: { [x: string]: string }) =>{
+  createRequest = (request: mssql.Request, data: { [x: string]: string | number }) =>{
     let keyNames = Object.keys(data);
-    console.log(keyNames)
+  
     keyNames.map((key) => {
       let value = data[key];
       request.input(key, value);
@@ -17,7 +17,7 @@ class Connection {
   }
   executeRequest = async(
     storedProcedure: string,
-    data: { [x: string]: string } = {}
+    data: { [x: string]: string | number } = {}
   ) =>{
     
     let emptyrequest = await (await this.pool).request();
