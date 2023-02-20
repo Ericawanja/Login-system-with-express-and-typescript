@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import Joi from 'joi';
 
 interface ExtendedRequest extends Request {
   body: {
@@ -11,7 +12,7 @@ interface ExtendedRequest extends Request {
 }
 
 export const validator =
-  (schema) => (req: ExtendedRequest, res: Response, next: NextFunction) => {
+  (schema: Joi.ObjectSchema) => (req: ExtendedRequest, res: Response, next: NextFunction) => {
     const { error } = schema.validate(req.body);
     if (error) {
       return res
