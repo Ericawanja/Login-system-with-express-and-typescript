@@ -89,13 +89,14 @@ export const forgotPassword = async (
 ) => {
   const { email } = req.body;
   try {
-    console.log(email);
-
-    const user = await exec("getUserByEmail", { email: "john@gmail.com" });
+  
+    
+    const user = await exec("getUserByEmail", { email});
+   
     if (user.length === 0)
       return res.status(404).json({ error: "User does not exist" });
 
-    await query(`insert into passwordResetQueue values(${email})`);
+    await query(`insert into passwordResetQueue values('${email}')`);
 
     res.send({ message: "Check your email for the reset password link" });
   } catch (error) {
