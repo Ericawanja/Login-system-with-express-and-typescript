@@ -1,7 +1,7 @@
 import { RequestHandler, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import { exec } from "../helpers/dbConnect";
+import { exec, query } from "../helpers/dbConnect";
 import { generateToken } from "../helpers/generateToken";
 
 interface ExtendedRequest extends Request {
@@ -18,6 +18,17 @@ interface loginRequest extends Request {
   body: {
     email: string;
     password: string;
+  };
+}
+interface resetRequest extends Request {
+  body: {
+    email: string;
+    password: string;
+  };
+}
+interface forgotPasswordRequest extends Request {
+  body: {
+    email: string;
   };
 }
 
@@ -67,11 +78,27 @@ export const login = async (req: loginRequest, res: Response) => {
     );
     return res.status(200).json({ status: "succesful login", token });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ error });
   }
 };
 
-export const updatePassword = (req: Request, res: Response) => {
-  return res.status(200).json({ msg: "set up register updating" });
+export const forgotPassword = async (
+  req: forgotPasswordRequest,
+  res: Response
+) => {
+  const { email } = req.body;
+  try {
+    console.log(email);
+
+    const user = await exec("getUserByEmail", { email: "john@gmail.com" });
+    if (user.length === 0)
+      return res.status(404).json({ error: "User does not exist" });
+
+    await query(`insert into passwordResetQueue values(${email})`);
+
+    res.send({ message: "Check your email for the reset password link" });
+  } catch (error) {
+    return res.status(500).json({ error });
+  }
 };
