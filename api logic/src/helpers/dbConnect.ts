@@ -28,12 +28,11 @@ class Connection {
     let results = await (await request.execute(storedProcedure)).recordset;
     return results;
   };
-  query = async (query:string) => {
-    console.log(query)
+  query = async (query: string) => {
     const results = await (await this.pool).request().query(query);
     return results;
   };
 }
 
 export const exec = new Connection().executeRequest;
-export const query = new Connection().query
+export const query = new Connection().query;
