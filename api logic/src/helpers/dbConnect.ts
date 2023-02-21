@@ -29,6 +29,7 @@ class Connection {
     return results;
   };
   query = async (query:string) => {
+    console.log(query)
     const results = await (await this.pool).request().query(query);
     return results;
   };
