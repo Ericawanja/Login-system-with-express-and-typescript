@@ -4,7 +4,7 @@ import path from 'path';
 
 dotenv.config({path:path.resolve(__dirname, '../.env')})
 
-let transporter = nodemailer.createTransport({
+let config = {
     host:'smtp.gmail.com',
     service: 'gmail',
     port:587,
@@ -12,7 +12,12 @@ let transporter = nodemailer.createTransport({
         user: process.env.EMAIL,
         pass:process.env.PASSWORD
     }
-})
+}
+
+function createTransporter(config:any){
+    return nodemailer.createTransport(config)
+}
+
 
 let message = {
     from:process.env.EMAIL,
@@ -22,9 +27,14 @@ let message = {
     html:"<p>The html paragram</p>"
 }
 
-transporter.sendMail(message, (error, info)=>{
-    if(error){
-        console.log(error)
-    }
-    console.log(info.response)
-})
+async function sendMail(message:any){
+    let transporter = await createTransporter(config)
+
+    transporter.sendMail(message, (error, info)=>{
+        if(error){
+            console.log(error)
+        }
+        console.log(info.response)
+    })
+
+}

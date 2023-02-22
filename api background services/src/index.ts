@@ -26,8 +26,9 @@ ejs.renderFile(
       to: process.env.TO,
       subject: "Nodemailer testing",
       text: "Plaintext",
-      html: "<p>The html paragram</p>",
+      html,
     };
+
     transporter.sendMail(message, (error, info) => {
       if (error) {
         console.log(error);
