@@ -31,6 +31,12 @@ interface forgotPasswordRequest extends Request {
     email: string;
   };
 }
+interface resetPasswordRequest extends Request {
+  body: {
+    email: string;
+    password: string;
+  };
+}
 
 export const register = async (req: ExtendedRequest, res: Response) => {
   const { firstname, lastname, email, password, isAdmin } = req.body;
@@ -95,7 +101,9 @@ export const forgotPassword = async (
       return res.status(404).json({ error: "User does not exist" });
 
     let resetToken = generateResetToken(email);
-    await query(`insert into passwordResetQueue values('${email}', resetToken,  1)`);
+    await query(
+      `insert into passwordResetQueue values('${email}', resetToken,  1)`
+    );
 
     res.send({ message: "Check your email for the reset password link" });
   } catch (error) {
@@ -103,3 +111,17 @@ export const forgotPassword = async (
   }
 };
 
+export const resetPassword = async (
+  req: resetPasswordRequest,
+  res: Response
+) => {
+  const { email, password } = req.body;
+
+  const user = await exec("getUserByEmail", {email})
+  if (user.length === 0) return res.status(404).json({error:"THe user doesn't exist"})
+
+await exec('UpdatePassword', {email, password})
+
+return res.status(200).json({message:"Password reset succesful"})
+  
+};
