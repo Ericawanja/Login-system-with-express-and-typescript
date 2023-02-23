@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import ejs from 'ejs'
 import path from 'path';
+import { exec } from '../helpers/dbConnect';
 import sendMail from '../helpers/email';
 
 
@@ -10,11 +11,14 @@ dotenv.config({path:path.resolve(__dirname, '../../.env')})
 
 
 const sendWelcomeEmail = async()=>{
-   let user = 'wanjaerica@gmail.com'
-   ejs.renderFile('Templates/registration.ejs', {name:'Me'}, async(error, html)=>{
+const emailList = await exec('getResetEmailList')
+for (let user of emailList){
+
+
+   ejs.renderFile('Templates/registration.ejs', {name:'there'}, async(error, html)=>{
     const message = {
         from:process.env.FROM,
-        to:process.env.TO,
+        to:user.Email,
         subject:"testing",
         html,
     }
@@ -25,5 +29,6 @@ const sendWelcomeEmail = async()=>{
         console.log('error', error)
     }
    }) 
+}
 }
 export default sendWelcomeEmail
