@@ -2,7 +2,7 @@ import { RequestHandler, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { exec, query } from "../helpers/dbConnect";
-import { generateToken } from "../helpers/generateToken";
+import { generateToken, generateResetToken } from "../helpers/generateToken";
 
 interface ExtendedRequest extends Request {
   body: {
@@ -89,17 +89,17 @@ export const forgotPassword = async (
 ) => {
   const { email } = req.body;
   try {
-  
-    
-    const user = await exec("getUserByEmail", { email});
-   
+    const user = await exec("getUserByEmail", { email });
+
     if (user.length === 0)
       return res.status(404).json({ error: "User does not exist" });
 
-    await query(`insert into passwordResetQueue values('${email}')`);
+    let resetToken = generateResetToken(email);
+    await query(`insert into passwordResetQueue values('${email}', resetToken,  1)`);
 
     res.send({ message: "Check your email for the reset password link" });
   } catch (error) {
     return res.status(500).json({ error });
   }
 };
+
