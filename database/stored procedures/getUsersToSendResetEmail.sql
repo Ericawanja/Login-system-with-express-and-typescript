@@ -1,9 +1,10 @@
 Create
-or Alter Procedure getResetEmailList(@email varchar(200)) AS BEGIN
+or Alter Procedure getResetEmailList 
+AS BEGIN
 select
     *
 from
     passwordResetQueue
 where
-    isSent = 1
+    isSent = 0
 END

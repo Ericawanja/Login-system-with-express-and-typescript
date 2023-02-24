@@ -3,7 +3,7 @@ or Alter Procedure updateResetQueue(@email varchar(200)) AS BEGIN
 update
     passwordResetQueue
 set
-    isSent = 0
+    isSent = 1
 where
     email = @email
 END

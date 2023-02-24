@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { exec, query } from "../helpers/dbConnect";
 import { generateToken, generateResetToken } from "../helpers/generateToken";
+import jwt from 'jsonwebtoken';
 
 interface ExtendedRequest extends Request {
   body: {
@@ -102,7 +103,7 @@ export const forgotPassword = async (
 
     let resetToken = generateResetToken(email);
     await query(
-      `insert into passwordResetQueue values('${email}', resetToken,  1)`
+      `insert into passwordResetQueue(email, resetToken, isSent) values('${email}', '${resetToken}', 0 )`
     );
 
     res.send({ message: "Check your email for the reset password link" });
@@ -117,11 +118,12 @@ export const resetPassword = async (
 ) => {
   const { email, password } = req.body;
 
-  const user = await exec("getUserByEmail", {email})
-  if (user.length === 0) return res.status(404).json({error:"THe user doesn't exist"})
+  const user = await exec("getUserByEmail", { email });
+  if (user.length === 0)
+    return res.status(404).json({ error: "The user doesn't exist" });
+const decodedData = await jwt.verify(user[0].resetToken, process.env.RESET_TOKEN as string)
+console.log(decodedData)
+  await exec("reset", { email, password });
 
-await exec('UpdatePassword', {email, password})
-
-return res.status(200).json({message:"Password reset succesful"})
-  
+  return res.status(200).json({ message: "Password reset succesful" });
 };

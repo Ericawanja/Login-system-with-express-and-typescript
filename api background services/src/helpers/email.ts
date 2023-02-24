@@ -23,7 +23,7 @@ const sendMail = async(messageOptions:any)=>{
   let transporter = createTransport(config)
   await transporter.verify()
   await transporter.sendMail(messageOptions, (err, info)=>{
-    console.log(info)
+    console.log(info, 'the info')
   })
 }
 
