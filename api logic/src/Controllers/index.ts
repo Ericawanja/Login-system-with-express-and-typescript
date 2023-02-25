@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import { exec, query } from "../helpers/dbConnect";
 import { generateToken, generateResetToken } from "../helpers/generateToken";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
 interface ExtendedRequest extends Request {
   body: {
@@ -117,13 +117,23 @@ export const resetPassword = async (
   res: Response
 ) => {
   const { email, password } = req.body;
+  try {
+    const user = await exec("getUserByEmail", { email });
+    if (user.length === 0)
+      return res.status(404).json({ error: "The user doesn't exist" });
 
-  const user = await exec("getUserByEmail", { email });
-  if (user.length === 0)
-    return res.status(404).json({ error: "The user doesn't exist" });
-const decodedData = await jwt.verify(user[0].resetToken, process.env.RESET_TOKEN as string)
-console.log(decodedData)
-  await exec("reset", { email, password });
+    const data = await exec("getUserInQueue", { email });
+    console.log(data[0].resetToken);
+    // let key: string = process.env.RESET_TOKEN as string;
+    // const decodedData = await jwt.verify(
+    //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IndhbmphZXJpY2FAZ21haWwuY29tIiwiaWF0IjoxNjc3MjIyMTIyLCJleHAiOjE2NzcyMjIxMzJ9.1A9seL5YvKy7793SaHEDpwWdzlnZM3_gCSJNHP0APfc",
+    //   key
+    // );
+    // console.log(decodedData, data)
+    //   await exec("reset", { email, password });
 
-  return res.status(200).json({ message: "Password reset succesful" });
+    return res.status(200).json({ message: "Password reset succesful" });
+  } catch (error) {
+    return res.json(500).json({ error: error });
+  }
 };
