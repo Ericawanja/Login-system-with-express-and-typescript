@@ -71,10 +71,10 @@ export const login = async (req: loginRequest, res: Response) => {
     let { password, email } = req.body;
     let user = await exec("getUserByEmail", { email });
     if (user.length === 0)
-      return res.status(404).json({ error: "invalid login creditials" });
+      return res.status(400).json({ error: "invalid login creditials" });
     let bool = bcrypt.compare(password, user[0].password); //returns boolean true or false
     if (!bool)
-      return res.status(404).json({ error: "invalid login creditials" });
+      return res.status(400).json({ error: "invalid login creditials" });
 
     //generate the jwt
 
