@@ -8,7 +8,7 @@ dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const sendWelcomeEmail = async () => {
   const emailList = await exec("getResetEmailList");
-  let user = { email: "wanjaerica@gmail.com" };
+ 
   for (let user of emailList) {
     ejs.renderFile(
       "Templates/reset.ejs",
