@@ -79,8 +79,8 @@ export const login = async (req: loginRequest, res: Response) => {
     //generate the jwt
 
     const token = generateToken(
-      user[0].password,
-      user[0].password,
+      user[0].email,
+      user[0].id,
       user[0].isAdmin
     );
     return res.status(200).json({ status: "succesful login", token });
