@@ -13,6 +13,7 @@ Most applications require an authetication fuctionality, But how do you go about
 npm init -y
 npm i typescript --save-dev
 npx tsc --init
+npm i express dotenv mssql 
 ```
 Create the project folder, inside the folder create two more folders, dist, and src. The dist folder will be the out directory which contains the compiled .js files while the src folder will contain the .ts files (of course, we are not writing javascript. The typescript files are compiled to javascript during the execution)
 
@@ -40,4 +41,8 @@ Edit the tsConfig file to set `src` as the `rootDir` and `dist` as the `outFile`
 }
 
 ```
+## 2. How to connect typescript express backend to mssql Database (Connecting to the database)
+
+Create .env file at the root. The .env file contain project credentials in key-value format for services used by the program. For security purposes, the .env file should only be available locally. To achieve that have a .gitignore file and specify all the fles 
+
 
